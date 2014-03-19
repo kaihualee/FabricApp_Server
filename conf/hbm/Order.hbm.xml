@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fabric.server.entity.Order" table="Orders" lazy="true">
+		<id name="id">
+			<column name="ID"/>
+			<generator class="native"/>
+		</id>
+		<version name="version" column="Version" />
+		<property name="createDate" column="CreateDate" not-null="true"/>
+		<property name="modifyTime" column="ModifyTime" not-null="true"/>
+		<property name="name" column="Name" type="string" length="128" />
+		<property name="status" column="Status" length="128" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">fabric.common.db.Status</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+		<property name="description" column="Description" type="string"/>
+		<many-to-one name="owner" class="fabric.server.entity.Account">
+			<column name="OwnerID" not-null="true"/>
+		</many-to-one>
+
+		<property name="material" column="Material" type="string" length="128" not-null="false" />
+		<property name="odStatus" column="OdStatus" type="string" length="128" not-null="false" />
+		<property name="orderStatus" column="OrderStatus" length="128" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">fabric.server.entity.OrderStatus</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+		<property name="orderCreate" column="OrderCreate" not-null="true"/>
+		<!--不会对scheme本省产生任何影响，只做外键约束-->
+		<many-to-one name="scheme" class="fabric.server.entity.Scheme" cascade="none" lazy="proxy">
+			<column name="SchemeID"/>
+		</many-to-one>
+		
+		<many-to-one name="customer" class="fabric.server.entity.Customer" cascade="save-update" lazy="proxy">
+			<column name="CustomerID" not-null="true"/>
+		</many-to-one>
+		
+		<many-to-one name="sketch" class="fabric.server.entity.DataFile" cascade="save-update" lazy="false">
+			<column name="sketchID" />
+		</many-to-one>	
+	</class>
+	
+</hibernate-mapping>

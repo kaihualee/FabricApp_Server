@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fabric.server.entity.FlowerType" table="FlowerType" lazy="true"
+		dynamic-update="true" optimistic-lock="version">
+		<id name="id">
+			<column name="ID"/>
+			<generator class="native"/>
+		</id>
+		<version name="version" column="Version"/>
+		<property name="createDate" column="CreateDate" not-null="true"/> 
+		<property name="modifyTime" column="ModifyTime" not-null="true"/>
+		<property name="name" column="Name" type="string" length="128" />	
+		<property name="status" column="Status" length="128" not-null="true" index="flowertype_status_idx"> 
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">fabric.common.db.Status</param>
+				<param name="type">12</param>
+			</type>
+		</property>	
+		<property name="references" column="RefTimes" />
+		<property name="description" column="Description" type="string" />
+		<many-to-one name="owner" class="fabric.server.entity.Account">
+			<column name="OwnerID" not-null="true"   index="flowertype_ownerID_idx"/>
+		</many-to-one>	
+		<many-to-one name="coverImage" class="fabric.server.entity.DataFile" cascade="all" lazy="false" fetch="join">
+			<column name="coverImageID"/>
+		</many-to-one>	
+		<many-to-one name="printImage" class="fabric.server.entity.DataFile" cascade="all" lazy="proxy">
+			<column name="printImageID"/>
+		</many-to-one>	
+		<many-to-one name="xmlFile" class="fabric.server.entity.DataFile" cascade="all" lazy="false" fetch="join" >
+			<column name="xmlFileID"/>
+		</many-to-one>
+		<!--双向-删除标签的时候需要用到-->
+		<set name="tags" table="Flower_FlowerTag" cascade="delete" inverse="false" lazy="true">
+			<key column="FlowerID"/>
+			<many-to-many column="FlowerTypeTagID" class="fabric.server.entity.FlowerTypeTag"/>
+		</set>
+	</class>
+
+</hibernate-mapping>

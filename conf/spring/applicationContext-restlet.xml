@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/task   
+        	http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+	<bean id="webApp" class="org.restlet.Application">
+		<property name="root" ref="root" />
+	</bean>
+	
+	<bean name="root" class="org.restlet.ext.spring.SpringBeanRouter">
+		<property name="attachments">
+			<map>
+				<entry key="/flowertype/{action}" value="flowerTypeResource"/>
+				<entry key="/account/{action}" value="accountResource" />
+				<entry key="/scene/{action}" value="sceneResource" />
+				<entry key="/data/{action}" value="dataResource" />
+				<entry key="/scheme/{action}" value="schemeResource" />
+				<entry key="/order/{action}" value="orderResource" />
+				<entry key="/grant/{action}" value="grantTableResource" />
+			</map>
+		</property>
+	</bean>
+
+</beans>

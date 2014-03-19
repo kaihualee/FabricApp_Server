@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fabric.server.entity.AccountSession" table="AccountSession" lazy="false">
+		<id name="id">
+			<column name="ID"/>
+			<generator class="native"/>
+		</id>
+		<version name="version" column="Times"/>
+		<property name="createDate" column="CreateDate" not-null="true"/>
+		<property name="modifyTime" column="ModifyTime" not-null="true"/>
+		<property name="sid" column="Sid" length="128" type="string" not-null="true"/>
+		<many-to-one name="account" class="fabric.server.entity.Account" not-null="false">
+			<column name="Account_ID"/>
+		</many-to-one>
+		<property name="ip" column="Ip" length="128" type="string" not-null="true"/>
+		<property name="power" column="Power" length="128" not-null="false">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">fabric.server.entity.ClientPower</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+		
+		<property name="name" column="Name" type="string" length="128" />
+		<property name="status" column="Status" length="128" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">fabric.common.db.Status</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+	</class>
+
+</hibernate-mapping>

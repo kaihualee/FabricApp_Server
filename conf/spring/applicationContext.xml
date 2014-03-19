@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/task   http://www.springframework.org/schema/task/spring-task-3.0.xsd"
+			default-autowire="byName">
+	<!--特征属配置Bean-->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		lazy-init="true">
+		<property name="locations">
+			<list>
+				<value>classpath*:config/config.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!--数据源配置Bean-->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName"
+			value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="maxActive" value="${maxActive}" />
+		<property name="maxWait" value="${maxWait}" />
+		<property name="maxIdle" value="${maxIdle}" />
+	</bean>
+
+	<!-- Spring DB Config -->
+	<!--Spring LocalSessionFactoryBean配置-->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingResources">
+			<list>
+				<value>hbm/Account.hbm.xml</value>
+				<value>hbm/AccountSession.hbm.xml</value>
+				<value>hbm/Shop.hbm.xml</value>
+				<value>hbm/DataFile.hbm.xml</value>
+				<value>hbm/FlowerType.hbm.xml</value>
+				<value>hbm/FlowerTypeTag.hbm.xml</value>
+				<value>hbm/FlowerTypeTagType.hbm.xml</value>
+				<value>hbm/ScenePosition.hbm.xml</value>
+				<value>hbm/SceneStyle.hbm.xml</value>
+				<value>hbm/Scene.hbm.xml</value>
+				<value>hbm/Scheme.hbm.xml</value>
+				<value>hbm/Order.hbm.xml</value>
+				<value>hbm/GrantTable.hbm.xml</value>
+				<value>hbm/Customer.hbm.xml</value>
+				<value>hbm/ProductSale.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					${hibernate.dialect}
+				</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.use_sql_comments">${hibernate.use_sql_comments}</prop>
+				<prop key="hibernate.format_sqlhibernate.format_sql">${hibernate.format_sql}</prop>
+				<!--  Hibernate 查询缓存 需要程序中手动打开 
+					<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				-->
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- 支持 @Transactional 标记 -->
+	<tx:annotation-driven />
+
+	<!-- 支持 @AspectJ 标记-->
+	<aop:aspectj-autoproxy />
+
+	<!-- 以AspectJ方式 定义 AOP -->
+	<aop:config>
+		<aop:advisor
+			pointcut="execution(public * fabric.common.db.BaseDaoImpl.*(..)) || execution(public * fabric.server.manager.impl.*.*(..))"
+			advice-ref="txAdvice" />
+	</aop:config>
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="*" read-only="false"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 支持自动装配-->
+	<context:component-scan base-package="fabric.common"/>
+	<context:component-scan base-package="fabric.server"/>
+	
+	
+	<bean id="messageSource" 
+        class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>messages</value>
+            </list>
+        </property>
+    </bean>
+	<!--定时器开关-->
+   <!--
+	<task:annotation-driven/>
+	-->
+   <task:executor id="executor" pool-size="5" />  
+   <task:scheduler id="scheduler" pool-size="9" />  
+   <task:annotation-driven executor="executor" scheduler="scheduler" />  
+
+</beans>

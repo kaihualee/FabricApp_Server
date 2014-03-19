@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="fabric.server.entity.Scheme" table="Scheme" lazy="true">
+		<id name="id">
+			<column name="ID"/>
+			<generator class="native"/>
+		</id>
+		<version name="version" column="Version"/>
+		<property name="createDate" column="CreateDate" not-null="true"/>
+		<property name="modifyTime" column="ModifyTime" not-null="true"/>
+		<property name="name" column="Name" type="string" length="128" />
+		<property name="status" column="Status" length="128" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">fabric.common.db.Status</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+		<property name="description" column="Description" type="string" />
+		<many-to-one name="owner" class="fabric.server.entity.Account">
+			<column name="OwnerID" not-null="true" index="scheme_ownerID_idx"/>
+		</many-to-one>
+		<many-to-one name="coverImage" class="fabric.server.entity.DataFile" lazy="false"
+			cascade="save-update">
+			<column name="coverImageID" />
+		</many-to-one>
+		<many-to-one name="xmlFile" class="fabric.server.entity.DataFile" 
+			lazy="false" cascade="save-update">
+			<column name="xmlFileID" />
+		</many-to-one>
+		<many-to-one name="scene" class="fabric.server.entity.Scene">
+			<column name="sceneID"  />
+		</many-to-one>
+		<many-to-one name="flowerType" class="fabric.server.entity.FlowerType" lazy="proxy">
+			<column name="flowertypeID" />
+		</many-to-one>
+		<set name="flowers" table="Scheme_Flower" 
+			cascade="delete"  lazy="true">
+			<key column="SchemeID"/>
+			<many-to-many column="FlowerID" class="fabric.server.entity.FlowerType"/>
+		</set>
+
+	</class>
+</hibernate-mapping>

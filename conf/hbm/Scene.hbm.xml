@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fabric.server.entity.Scene" table="Scene" lazy="true">
+		<id name="id">
+			<column name="ID"/>
+			<generator class="native"/>
+		</id>
+		<version name="version" column="Version"/>
+		<property name="createDate" column="CreateDate" not-null="true"/>
+		<property name="modifyTime" column="ModifyTime" not-null="true"/>
+		<property name="name" column="Name" type="string" length="128" />
+		<property name="status" column="Status" length="128" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">fabric.common.db.Status</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+		<property name="description" column="Description" type="string" />
+		<many-to-one name="owner" class="fabric.server.entity.Account">
+			<column name="OwnerID" not-null="true"/>
+		</many-to-one>
+		<many-to-one name="coverImage" class="fabric.server.entity.DataFile" cascade="save-update" lazy="proxy">
+			<column name="coverImageID"/>
+		</many-to-one>
+		<many-to-one name="cab" class="fabric.server.entity.DataFile" cascade="save-update" lazy="proxy">
+			<column name="cabID"/>
+		</many-to-one>
+		<many-to-one name="xmlFile" class="fabric.server.entity.DataFile" cascade="save-update" lazy="proxy">
+			<column name="xmlFileID"/>
+		</many-to-one>
+		<many-to-one name="scenePos" class="fabric.server.entity.ScenePosition">
+			<column name="scenePosID" not-null="true"/>
+		</many-to-one>
+		<many-to-one name="sceneStyle" class="fabric.server.entity.SceneStyle">
+			<column name="sceneStyleID" not-null="true"/>
+		</many-to-one>
+		
+		<property name="index" column="Sequence" />
+	</class>
+
+</hibernate-mapping>

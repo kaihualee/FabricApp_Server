@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fabric.server.entity.GrantTable" table="GrantTable" lazy="true">
+		<id name="id">
+			<column name="ID"/>
+			<generator class="native"/>
+		</id>
+		<version name="version" column="Version"/>
+		<property name="createDate" column="CreateDate" not-null="true"/>
+		<property name="modifyTime" column="ModifyTime" not-null="true"/>
+		<property name="name" column="Name" type="string" length="128" />
+		<property name="status" column="Status" length="128" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">fabric.common.db.Status</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+		<property name="description" column="Description" type="string" />
+		<many-to-one name="owner" class="fabric.server.entity.Account">
+			<column name="OwnerID" not-null="true"/>
+		</many-to-one>
+		
+		<many-to-one name="partA" class="fabric.server.entity.Account" lazy="proxy">
+			<column name="PartA" not-null="true" index="granttable_partA_idx"/>
+		</many-to-one>
+		<many-to-one name="partB" class="fabric.server.entity.Account" lazy="false" >
+			<column name="PartB" not-null="true" index="granttable_partB_idx"/>
+		</many-to-one>
+		<property name="type" column="Type" length="128" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">fabric.server.entity.ProductType</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+		<property name="product" column="productID" type="long" />
+		
+		<property name="startDate" column="StartDate" />
+		<property name="endDate" column="EndDate"  />
+	</class>
+	
+</hibernate-mapping>

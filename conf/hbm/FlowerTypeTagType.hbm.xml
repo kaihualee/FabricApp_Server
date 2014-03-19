@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fabric.server.entity.FlowerTypeTagType" table="FlowerTypeTagType" lazy="false">
+		<id name="id">
+			<column name="ID"/>
+			<generator class="native"/>
+		</id>
+		<property name="createDate" column="CreateDate" not-null="true" />
+		<property name="modifyTime" column="ModifyTime" not-null="true"/>
+		<property name="name" column="Name" type="string" not-null="true"/>					
+	</class>
+
+</hibernate-mapping>

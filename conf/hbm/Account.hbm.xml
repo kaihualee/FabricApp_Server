@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="fabric.server.entity.Account" table="Account" lazy="true">
+		<id name="id">
+			<column name="ID"/>
+			<generator class="native"/>
+		</id>
+		<property name="createDate" column="CreateDate" not-null="true"/>
+		<property name="modifyTime" column="ModifyTime" not-null="true"/>
+		<property name="name" column="Name" length="128" type="string" not-null="true"/>
+		<property name="realname" column="RealName"  length="128" type="string" not-null="true"/>
+		<property name="password" column="Password"  length="128" type="string" not-null="true"/>
+		<property name="nickname" column="NickName"  length="128" type="string" not-null="false"/>
+		<property name="info" column="info"  length="128" type="string" not-null="false"/>
+		<property name="rule" column="Rule" length="128" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">fabric.server.entity.UserRule</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+		<property name="status" column="Status" length="128" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">fabric.common.db.Status</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+		<many-to-one name="shop" class="fabric.server.entity.Shop" 
+			not-null="false" cascade="save-update" lazy="false">
+			<column name="Shop_ID"/>
+		</many-to-one>
+	</class>
+
+</hibernate-mapping>
